@@ -1,0 +1,18 @@
+rules:
+  - id: vm-context-fetch-exposed
+    languages: [typescript, javascript]
+    severity: HIGH
+    message: >-
+      `vm.createContext()` sandbox includes `fetch`, giving sandboxed code
+      unrestricted network access. This allows code running in the sandbox to
+      exfiltrate data or perform SSRF attacks. Remove `fetch` from the sandbox
+      context or use a restricted proxy that limits allowed destinations.
+    metadata:
+      cwe: "CWE-693: Protection Mechanism Failure"
+      category: security
+      confidence: HIGH
+    pattern-either:
+      - pattern: |
+          vm.createContext({..., fetch: $VAL, ...})
+      - pattern: |
+          vm.createContext({..., fetch, ...})

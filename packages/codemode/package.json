@@ -17,6 +17,7 @@
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "ai": "^6.0.94",
+    "fast-check": "^3.23.2",
     "vitest": "3.2.4",
     "zod": "^4.3.6"
   },

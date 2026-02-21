@@ -1,0 +1,20 @@
+rules:
+  - id: http-server-no-auth
+    languages: [typescript, javascript]
+    severity: HIGH
+    message: >-
+      CORS wildcard `Access-Control-Allow-Origin: *` allows any origin to make
+      cross-origin requests to this server. Combined with missing authentication,
+      this exposes the endpoint to unauthorized access from any website. Restrict
+      the allowed origin to trusted domains or add authentication middleware.
+    metadata:
+      cwe: "CWE-942: Overly Permissive Cross-domain Whitelist"
+      category: security
+      confidence: HIGH
+    pattern-either:
+      - pattern: $RES.setHeader("Access-Control-Allow-Origin", "*")
+      - pattern: $RES.header("Access-Control-Allow-Origin", "*")
+      - pattern: |
+          new Response($BODY, { headers: { "Access-Control-Allow-Origin": "*", ... }, ... })
+      - pattern: |
+          return new Response($BODY, { headers: { "Access-Control-Allow-Origin": "*", ... }, ... })

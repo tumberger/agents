@@ -1,0 +1,26 @@
+rules:
+  - id: json-parse-to-function-call
+    languages: [typescript, javascript]
+    severity: HIGH
+    message: >-
+      `JSON.parse()` result is passed directly to function call `$SINK(...)` without
+      schema validation. An attacker can supply arbitrary JSON that bypasses expected
+      type constraints. Validate parsed data with a schema library (e.g., Zod `.parse()`
+      or `.safeParse()`) before passing it to application logic.
+    metadata:
+      cwe: "CWE-20: Improper Input Validation"
+      category: security
+      confidence: MEDIUM
+    mode: taint
+    pattern-sources:
+      - pattern: JSON.parse(...)
+    pattern-sinks:
+      - patterns:
+          - pattern: $SINK(...)
+          - pattern-not: console.$METHOD(...)
+          - pattern-not: JSON.stringify(...)
+          - pattern-not: $SCHEMA.parse(...)
+          - pattern-not: $SCHEMA.safeParse(...)
+    pattern-sanitizers:
+      - pattern: $SCHEMA.parse(...)
+      - pattern: $SCHEMA.safeParse(...)
